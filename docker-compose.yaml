@@ -1,0 +1,21 @@
+version: '3'
+services:
+  web:
+    tty: true #I am not sure, bus this is the similar to the flag "-it" in docker run.
+    stdin_open: true #I don't have any idea about the use of this field, but you need to put in order to don't have problems with react.
+    build:
+      context: . # You specify the directory where you have all the files of the project.
+      dockerfile: Dockerfile.dev #You specify the name of the dockerfile that you need to run.
+    ports:
+      - '3000:3000'
+    volumes:
+      - /app/node_modules #WE DON'T WANT TO MAP THIS FOLDER OF THE CONTAINER WITH OUR LOCAL "node_modules" FOLDER
+      - .:/app #WE WANT TO MAP EVERYTHING IN THE CURRENT DIRECTORY, WITH EVERYTHING INSIDE THE '/app' FOLDER OF THE CONTAINER.
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes: 
+      - /app/node_modules
+      - .:/app
+    command: ["npm", "run", "test"] #This overwrite the starter command indicated in the Dockerfile.env
